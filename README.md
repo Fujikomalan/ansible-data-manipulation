@@ -2,7 +2,8 @@
 
 - [ Setting Default Value As A List ](#creating-list-from-dict-item--instance_id)
 - [ Creating List from Dict Values ](#creating-list-from-dict-item--instance_id)
-
+- [ Reboot Module](#reboot-module) 
+   - https://earlruby.org/2019/07/rebooting-a-host-with-ansible/
 
 
 ###  Creating List From Dict Item  instance_id 
@@ -86,3 +87,27 @@
         instance_ids: "{{ instance_ids | default([]) + [ item.instance_id ] }}"
       loop: "{{asg.results.0.instances}}"
 ```
+
+
+### Reboot Module
+
+
+```sh
+
+- name: Reboot host and wait for it to restart
+  reboot:
+    msg: "Reboot initiated by Ansible"
+    connect_timeout: 5
+    reboot_timeout: 600
+    pre_reboot_delay: 0
+    post_reboot_delay: 30
+    test_command: whoami
+    
+```
+
+
+- Reboot the host
+- Wait 30 seconds
+- Attempt to connect via ssh and run whoami
+- Disconnect after 5 seconds if it ssh isn’t working
+- Keep attempting to connect for 10 minutes (600 seconds)
