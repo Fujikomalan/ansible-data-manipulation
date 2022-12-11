@@ -5,6 +5,8 @@
 - [ Reboot Module](#reboot-module) 
    - https://earlruby.org/2019/07/rebooting-a-host-with-ansible/
 
+- [ Creating List From Dict Values ](#creating-list-from-dict-values)
+
 
 ###  Creating List From Dict Item  instance_id 
 
@@ -111,3 +113,69 @@
 - Attempt to connect via ssh and run whoami
 - Disconnect after 5 seconds if it ssh isn’t working
 - Keep attempting to connect for 10 minutes (600 seconds)
+
+
+### Creating List From Dict values
+
+```sh
+
+    - name: "Creating A List Of Autoscaling Group Instances Ids"
+      set_fact:
+        instances: "{{ asg_info.results.0.instances | map(attribute='instance_id') }}"
+
+    - debug:
+       var: instances
+```       
+  
+```sh
+
+ok: [localhost] => {
+    "instances": [
+        "i-0443efcaee2773270",
+        "i-0bb59fbfd45ddbb98"
+    ]
+}
+
+```
+
+```sh
+    "asg_info": {
+        "changed": false,
+        "failed": false,
+        "results": [
+            {
+                "auto_scaling_group_arn": "",
+                "auto_scaling_group_name": "shopping-asg",
+                "availability_zones": [
+                    "ap-south-1c",
+                    "ap-south-1b",
+                    "ap-south-1a"
+                ],
+                "created_time": "2022-12-08T14:06:21.657000+00:00",
+                "default_cooldown": 300,
+                "desired_capacity": 2,
+                "enabled_metrics": [],
+                "health_check_grace_period": 300,
+                "health_check_type": "EC2",
+                "instances": [
+                    {
+                        "availability_zone": "ap-south-1b",
+                        "health_status": "Healthy",
+                        "instance_id": "i-0443efcaee2773270",
+                        "instance_type": "t2.micro",
+                        "launch_configuration_name": "shopping-lc",
+                        "lifecycle_state": "InService",
+                        "protected_from_scale_in": false
+                    },
+                    {
+                        "availability_zone": "ap-south-1a",
+                        "health_status": "Healthy",
+                        "instance_id": "i-0bb59fbfd45ddbb98",
+                        "instance_type": "t2.micro",
+                        "launch_configuration_name": "shopping-lc",
+                        "lifecycle_state": "InService",
+                        "protected_from_scale_in": false
+                    }
+                ],
+
+```
